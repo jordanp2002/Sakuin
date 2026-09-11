@@ -67,8 +67,8 @@ struct SakuinPanel: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 9) {
+        VStack(alignment: .leading, spacing: 13) {
+            HStack(spacing: 10) {
                 Button {
                     if showingAppearance {
                         showingAppearance = false
@@ -76,30 +76,31 @@ struct SakuinPanel: View {
                     }
                 } label: {
                     Image(systemName: showingAppearance ? "chevron.left" : "character.book.closed.fill")
-                        .foregroundStyle(colors.accent)
-                        .frame(width: 24, height: 24)
-                        .background(colors.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(showingAppearance ? colors.secondary : Color.white)
+                        .frame(width: 30, height: 30)
+                        .background(showingAppearance ? colors.surface : colors.accent)
+                        .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
                 }
                 .buttonStyle(.plain)
                 .allowsHitTesting(showingAppearance)
                 .accessibilityLabel(showingAppearance ? "Back to search" : "Sakuin")
 
                 Text(showingAppearance ? "Settings" : "Sakuin")
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
                 Spacer()
                 if !showingAppearance {
                     Text("索引")
-                        .font(.caption.weight(.medium))
+                        .font(.system(size: 11, weight: .medium))
                         .foregroundStyle(colors.muted)
                 }
-                Button {
+                SakuinIconButton(
+                    icon: showingAppearance ? "checkmark" : "slider.horizontal.3",
+                    label: showingAppearance ? "Done" : "Settings"
+                ) {
                     showingAppearance.toggle()
                     if !showingAppearance { searchFocusGeneration += 1 }
-                } label: {
-                    Image(systemName: showingAppearance ? "checkmark" : "slider.horizontal.3")
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(showingAppearance ? "Done" : "Settings")
             }
 
             if !showingAppearance { searchField }
@@ -126,10 +127,11 @@ struct SakuinPanel: View {
         }
             .frame(height: 24)
             .padding(.horizontal, 10)
-            .padding(.vertical, 10)
-            .background(colors.base, in: RoundedRectangle(cornerRadius: 10))
+            .padding(.vertical, 8)
+            .background(colors.base, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
             .overlay {
-                RoundedRectangle(cornerRadius: 10).strokeBorder(colors.accent.opacity(0.4), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 9, style: .continuous)
+                    .strokeBorder(colors.border, lineWidth: 1)
             }
     }
 
@@ -197,18 +199,19 @@ struct SakuinPanel: View {
 
     private var footer: some View {
         HStack(spacing: 10) {
-            Label("\(library.notes.count) notes", systemImage: "doc.text")
-                .font(.caption)
+            Circle()
+                .fill(colors.success)
+                .frame(width: 6, height: 6)
+            Text("\(library.notes.count) notes")
+                .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(colors.muted)
             Spacer()
-            Button(action: library.chooseFolder) { Image(systemName: "folder") }.help("Choose notes folder")
-            Button(action: library.reload) { Image(systemName: "arrow.clockwise") }.help("Refresh notes")
-            Button { NSApplication.shared.terminate(nil) } label: { Image(systemName: "power") }.help("Quit Sakuin")
+            SakuinIconButton(icon: "folder", label: "Choose notes folder", action: library.chooseFolder)
+            SakuinIconButton(icon: "arrow.clockwise", label: "Refresh notes", action: library.reload)
+            SakuinIconButton(icon: "power", label: "Quit Sakuin") { NSApplication.shared.terminate(nil) }
         }
-        .buttonStyle(.borderless)
-        .foregroundStyle(colors.accent)
         .padding(.horizontal, 16)
-        .frame(height: 40)
-        .background(colors.base)
+        .frame(height: 48)
+        .background(colors.mantle)
     }
 }
