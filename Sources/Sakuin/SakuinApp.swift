@@ -117,7 +117,7 @@ final class SakuinAppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate
 }
 
 final class SakuinPanelWindow: NSPanel {
-    static let cornerRadius: CGFloat = 22
+    static let cornerRadius: CGFloat = 16
 
     init() {
         super.init(
